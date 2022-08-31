@@ -1,0 +1,751 @@
+---
+title: "Bellabeat Case Study"
+author: "Anuttara Rajasinghe"
+date: "2022-08-23"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+## **Google Data Analytics- Capstone Case Study 2**
+
+## Bellabeat - How Can A Wellness Company Play It Smart?
+
+
+![](C:/Users/USER/Documents/Capstone Case Study/bellabeat_logo.png){Width=50%,Height=100%}
+
+### Introduction
+\
+Greetings! Welcome to my first ever R Notebook! I have been pursuing the Google Data Analytics Certification and this Capstone Case study is my first ever case study for the 8th course of the Certification. 
+\
+
+
+Welcome to the Bellabeat data analysis case study! In this case study,
+you will perform many real-world tasks of a junior data analyst. You
+will imagine you are working for Bellabeat, a high-tech manufacturer of
+health-focused products for women, and meet different characters and
+team members. In order to answer the key business questions, you will
+follow the steps of the data analysis process: **ask, prepare, process,
+analyze, share, and act**. Along the way, the Case Study Roadmap tables
+--- including guiding questions and key tasks --- will help you stay on
+the right path.
+\
+
+### Scenario
+
+You are a junior data analyst working on the marketing analyst team at
+Bellabeat, a high-tech manufacturer of health-focused products for
+women. Bellabeat is a successful small company, but they have the
+potential to become a larger player in the global smart device market.
+Urška Sršen, co-founder and Chief Creative Officer of Bellabeat, believes
+that analyzing smart device fitness data could help unlock new growth
+opportunities for the company. You have been asked to focus on one of
+Bellabeat's products and analyze smart device data to gain insight into
+how consumers are using their smart devices. The insights you discover
+will then help guide marketing strategy for the company. You will
+present your analysis to the Bellabeat executive team along with your
+high-level recommendations for Bellabeat's marketing strategy.
+\
+
+### Characters and products
+\
+
+#### Characters
+
+-   **Urška Sršen** : Bellabeat's co-founder and Chief Creative Officer
+-   **Sando Mur** : Mathematician and Bellabeat's co-founder; key member
+    of the Bellabeat executive team
+-   **Bellabeat marketing analytics team** : A team of data analysts
+    responsible for collecting, analyzing, and reporting data that helps
+    guide Bellabeat's marketing strategy. You joined this team six
+    months ago and have been busy learning about Bellabeat's mission
+    and business goals --- as well as how you, as a junior data analyst,
+    can help Bellabeat achieve them.
+\
+
+#### Products
+
+-   **Bellabeat app**: The Bellabeat app provides users with health data
+    related to their activity, sleep, stress, menstrual cycle, and
+    mindfulness habits. This data can help users better understand their
+    current habits and make healthy decisions. The Bellabeat app
+    connects to their line of smart wellness products.
+-   **Leaf**: Bellabeat's classic wellness tracker can be worn as a
+    bracelet, necklace, or clip. The Leaf tracker connects to the
+    Bellabeat app to track activity, sleep, and stress.
+-   **Time**: This wellness watch combines the timeless look of a
+    classic timepiece with smart technology to track user activity,
+    sleep, and stress. The Time watch connects to the Bellabeat app to
+    provide you with insights into your daily wellness.
+-   **Spring**: This is a water bottle that tracks daily water intake
+    using smart technology to ensure that you are appropriately hydrated
+    throughout the day. The Spring bottle connects to the Bellabeat app
+    to track your hydration levels.
+\
+
+### **Ask Phase**
+\
+
+#### Business Goal
+
+In this case study, we are asked to analyze smart device usage data in
+order to gain insight into how consumers use non-Bellabeat smart
+devices. We are also asked to provide recommendations about one of their
+products, for this case study I choose to analyze the Bellabeat App. Using this
+data we can answer the following questions such as:
+
+-   What are the trends in the usage of these devices?
+-   What are the most used features?
+-   How can these features help Bellabeat's marketing strategy?
+-   What additional features could get the customers interested?
+\
+
+### **Prepare Phase**
+\
+
+#### Data Sources
+
+The data used in the project is from this open source data set from
+Kaggle by the user Möbius:
+<https://www.kaggle.com/datasets/arashnic/fitbit> This data
+will be stored in the main project directory.
+
+**Limitations in the data set:**
+
+-   This data has a small sample size of only 33 distinct individuals
+-   This data has only been collected for a month which is only a short
+    time frame
+-   While Bellabeat focuses their products on women, the survey included
+    both men and women.
+-   This data has been collected on the year of 2016, which means that
+    changes that occurred due to the COVID-19 pandemic wasn't taken into
+    account.
+-   Age, gender or height data isn't provided so we assume that they are
+    similar in age and height.
+\
+
+### **Process Phase**
+
+For this phase, I shall be using spreadsheets and SQL to clean the data.
+\
+
+#### **dailyActivity Dataset**:
+
+**Spreadsheet cleanup-log:**
+
+-   No whitespace
+-   No duplicates
+-   Rounded values in TotalDistance, TrackerDistance,
+    VeryActiveDistance, ModeratelyActiveDistance and
+    LightlyActiveDistance to 1 decimal place.
+
+**SQL Summary:**
+
+Reading the "dailyActivity_merged.csv" document into dataframe.
+
+```{r}
+dailyActivity <- read.csv("dailyActivity_merged.csv")
+```
+\
+Preview the dataframe
+
+```{r}
+head(dailyActivity)
+```
+\
+Taking a look at the columns present in this dataset:
+
+```{r}
+colnames(dailyActivity)
+```
+\
+
+#### **sleepDay Dataset**:
+
+**Spreadsheet cleanup-log:**
+
+-   No whitespaces
+-   Data duplicates removed in rows: 163, 225 and 382.
+-   Split date and time to 2 separate columns using RIGHT() and LEFT()
+    function.
+
+**SQL Summary:**
+
+Reading the "sleepDay_Newmerged.csv" document into dataframe.
+
+```{r}
+sleepDay <- read.csv("sleepDay_Newmerged.csv")
+```
+\
+Preview the dataframe
+
+```{r}
+head(sleepDay)
+```
+\
+Taking a look at the columns present in this dataset:
+
+```{r}
+colnames(sleepDay)
+```
+\
+
+#### **weightLog Dataset**:
+
+**Spreadsheet cleanup-log:**
+
+-   No whitespaces
+-   No Duplicates
+-   Verified that Kg to Lbs conversion in correct by "\*" multiplying KG
+    value by 2.2046226218.
+-   Rounded Weight in kg, Weight in Pounds and BMI to 1 decimal place by
+    the ROUND() function.
+-   Split date and time to 2 separate columns using RIGHT() and LEFT()
+    function.
+
+**SQL Summary:**
+
+Reading the "weightLogInfo_Newmerged.csv" document into dataframe.
+
+```{r}
+weightLog <- read.csv("weightLogInfo_Newmerged.csv")
+```
+\
+Preview the dataframe
+
+```{r}
+head(weightLog)
+```
+\
+Taking a look at the columns present in this dataset:
+
+```{r}
+colnames(weightLog)
+```
+\
+
+#### **heartrate_seconds Dataset**:
+
+**Spreadsheet cleanup-log:**
+
+The dataset was too large to load into Google Sheets so I loaded it to the SQLite database itself to clean and process the data.
+
+**SQL Summary:**
+
+Reading the "heartrate_seconds_merged.csv" document into dataframe.
+
+```{r}
+heartrate <- read.csv("heartrate_seconds_merged.csv")
+```
+\
+Loading 'sqldf' package to library:
+
+```{r}
+library(sqldf)
+```
+\
+I wanted to split the Date-Time column into 2 separate Date and Time columns so:
+
+```{r}
+heartrate_new <- sqldf("SELECT Id, SUBSTR(Time, 1, 7) AS Date, SUBSTR(Time, 11, 11) AS Time, Value FROM heartrate")
+```
+\
+Preview the new dataframe
+
+```{r}
+head(heartrate_new)
+```
+\
+Taking a look at the columns present in this dataset:
+
+```{r}
+colnames(heartrate_new)
+```
+\
+
+#### **minuteMETsNarrow Dataset**:
+
+**Spreadsheet cleanup-log:**
+
+The dataset was too large to load into Google Sheets so I loaded it to
+the SQLite database itself to clean and process the data.
+
+**SQL Summary:**
+
+Reading the "minuteMETsNarrow_merged.csv" document into dataframe.
+
+```{r}
+minMET <- read.csv("minuteMETsNarrow_merged.csv")
+```
+\
+I wanted to split the Date-Time column into 2 seperate Date and Time Columns so:
+
+```{r}
+minMET_new <- sqldf("SELECT Id, SUBSTR(ActivityMinute, 1, 7) AS Date, SUBSTR(ActivityMinute, 11, 11) AS Time, METs FROM minMET")
+```
+\
+Preview the new dataframe
+
+```{r}
+head(minMET_new)
+```
+\
+Taking a look at the columns present in this dataset:
+
+```{r}
+colnames(minMET_new)
+```
+\
+
+#### **dailySteps Dataset**:
+
+**Spreadsheet cleanup-log:**
+
+-   No whitespace
+-   No duplicates
+
+**SQL Summary:**
+
+Reading the "dailySteps_merged.csv" document into dataframe.
+
+```{r}
+step <- read.csv("dailySteps_merged.csv")
+```
+\
+Preview the dataframe
+
+```{r}
+head(step)
+```
+\
+Taking a look at the columns present in this dataset:
+
+```{r}
+colnames(step)
+```
+\
+
+### **Analyze and Share Phase**
+
+#### dailyActivity dataset
+
+
+1.  To see the number of participants contributed:
+
+```{r}
+sqldf("SELECT COUNT(DISTINCT Id) AS Num_Participants FROM dailyActivity")
+```
+\
+
+2.  To see the average total number of steps taken per day
+
+```{r}
+sqldf("SELECT round(avg(TotalSteps), 0) AS Avg_TotSteps FROM dailyActivity")
+```
+\
+
+3.  Average total distance walked by an individual
+
+```{r}
+sqldf("SELECT round(avg(TotalDistance), 0) AS Avg_TotSteps FROM dailyActivity")
+```
+\
+
+4.  To make sure that dailySteps are a subset of the steps recorded in
+    dailyActivity
+
+```{r}
+sqldf("SELECT COUNT()
+FROM dailyActivity AS activity 
+LEFT JOIN step ON 
+activity.Id = step.Id AND 
+activity.ActivityDate = step.ActivityDay AND 
+activity.Totalsteps = step.StepTotal")
+```
+\
+
+5.  Average total calories burned by an individual
+
+```{r}
+sqldf("SELECT round(avg(Calories), 0) AS Avg_TotSteps FROM dailyActivity")
+```
+\
+6. Summary of dailyActivity dataset
+
+```{r}
+summary(dailyActivity)
+```
+\
+By this analysis, this shows that there are 33 unique participants who have contributed their data to the dailyActivity dataset. 
+
+* When analyzing, it is shown the the average total number of steps taken by an individual in a day is 7638. This is lower than the daily 10,000 steps recommended by CDC.
+
+* The Fitbit users remain sedentary for around 991.2 minutes or 16.5 hours. The CDC indicates that "LOW risk indicates sitting less than 4 hours per day. MEDIUM risk indicates sitting 4 to 8 hours per day. HIGH risk indicates sitting 8 to 11 hours per day. VERY HIGH risk indicates sitting more than 11 hours per day". This lies our participants in the range of high risk individuals.
+
+* On the other hand, the Fitbit users get 21.16 minutes of rigorous activity minutes, which equates to 148.12 minutes a week, this is great as the CDC recommends at least 75 minutes of rigorous activity minutes per week! 
+
+* If we were to think about the sedentary hours and vigorous activity minutes, scientists discovered that 40 minutes of moderate to intense movement per day can counteract the effects of up to 10 hours of sitting each day, the Bellabeat company can use the devices to calculate the most effective algorithm to the users after analyzing their movement patterns.
+
+* When analyzing the mean number of calories burned off per day, our users burned off on average 2304 calories a day. The CDC recommends to burn off at least 2000 calories per day for women and 2500 for men. As the genders of the participants aren't specified, we don't know if most of the men met their target calorie burn whereas women would have reached their goal if they burned at least 2000 calories.
+\
+\
+
+#### sleepDay dataset
+
+1.  To see the number of participants contributed:
+
+```{r}
+sqldf("SELECT COUNT(DISTINCT Id) AS Num_Participants FROM sleepDay")
+```
+\
+2. Summary of the sleepDay dataset
+
+```{r}
+summary(sleepDay)
+```
+\
+
+* The sleepDay dataset have only 24 participants which indicates a small sample size, this is not the best way to determine the outcome of the whole population
+
+* The users spent on average 419.2 minutes or 7 hours asleep. This is great as the CDC recommends "7 or more hours of sleep per night" for the best health on adults. We could encourage the users to sleep a bit longer.
+
+* The users spend on average 458.5 minutes in bed which indicates that it roughly takes 39.3 minutes for users to fall asleep. People should not spend more than one hour awake in bed, according to Health Central.This is done to avoid forming a mental association between being awake and being in bed, which might contribute to insomnia. 
+\
+\
+
+#### weightLog dataset
+
+1.  To see the number of participants contributed:
+
+```{r}
+sqldf("SELECT COUNT(DISTINCT Id) AS Num_Participants FROM weightLog")
+```
+\
+
+2. Summary of the weightLog dataset
+
+```{r}
+summary(weightLog)
+```
+\
+
+* This summary report produced only the weight logs of 8 participants which is not enough to represent the whole population of fitbit users. These results therefore may lead to bias.
+
+* The average BMI of the users is 25.19. This unfortunately falls within the overweight range which is 25.0 to 29.9. This indicates that the users should loose a bit of weight to be healthy. CDC says: If your BMI is 18.5 to 24.9, it falls within the normal or Healthy Weight range.
+
+* When analyzing the body fat percentage, the users have on average 23.5% body fat. The analysis provides different outcomes for men and women of different age ranges. For men who are in the age range 20-39, the body fat percentages should lie in the range of 8%-19%, for women of the same age, the body fat should be in the range of 21%-32%. On the other hand, users in the older age range 40-59, for males the recommended body fat percentage is 11%-21% whereas for females its 23%-33%. This shows that the women participants are in a healthy range but the men are not.
+
+\
+\
+
+#### heartrate_new dataset
+
+1.  To see the number of participants contributed:
+
+```{r}
+sqldf("SELECT COUNT(DISTINCT Id) AS Num_Participants FROM heartrate_new")
+```
+\
+
+2. To check how many times heart rate exceeded 100bpm
+
+```{r}
+sqldf('SELECT COUNT(Id) FROM heartrate_new WHERE Value>105')
+```
+\
+
+3. Summary of the heartrate_new dataset
+
+```{r}
+summary(heartrate_new)
+```
+\
+
+* This analysis is only of 14 participants which is an inadequate representation of the Fitbit user population so these results may lead to bias.
+
+* This summary shows that the average heart rate of a person is 77.33 bpm (beats per minute). The normal heart rate for adults is 60 to 100 bpm so our users fall into that heathly category.
+
+* There are 270841 out of 2483658 entries where the heart rate increased 100 bmp. This means that 10.9% of the heart rates are above the recommended level. Generally, for adults, a heart rate of more than 100 beats per minute (tachycardia) is considered high.
+
+* The resting heart rate of different people might vary by up to 70 beats per minute.
+Changes in resting heart rate over many days might indicate illness, menstrual cycle effects, or other acute events. As a result, heart rate is an important health feature to monitor. 
+
+\
+\
+
+#### minMET dataset
+
+1.  To see the number of participants contributed:
+
+```{r}
+sqldf("SELECT COUNT(DISTINCT Id) AS Num_Participants FROM minMET")
+```
+\
+
+2. Summary of the minMET dataset
+
+```{r}
+summary(minMET)
+```
+\
+
+* This data is collected from 33 distinct individuals, which again is not a big enough sample size to represent the fitbit user population.
+
+* An MET minute is the amount of energy expended during a minute while at rest. Our users average at 14.69 METs. This indicates that an activity with a MET of four requires a person to exert four times the energy they do when sitting. As a result, a user averaging 14.47 MET throughout the day is extremely high, leading to the notion that the Fitbit is not appropriately computing this data point.
+\
+\
+
+
+### Visualizations
+
+Loading packages into library
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+\
+
+__1. Relationship between Total Daily Steps and Total Daily Calories Burned. (Factoring the distance travelled as well)__
+
+\
+This code is used to create a scatterplot from the popular package "ggplot". Calories will be on the y axis and Total daily steps will be on the x axis.
+
+```{r}
+ggplot(data= dailyActivity)+
+  geom_point(mapping=aes(x=TotalSteps, y=Calories, color=TotalDistance))+
+  labs(title= "Total Daily Steps Vs. Total Calories Burned", caption= 'Data Source: Fitabase Data 4.12.16-5.12.16')+
+  xlab("Total Daily Steps") +
+  ylab("Calories Burnt")
+```
+
+\
+This shows a linear correlation between Total Steps taken and Calories burnt off. That means, the more steps the users take, the more Calories they burn off.
+\
+\
+
+__2. The Relationship between the Minutes minutes spent by the users in a day.__
+
+Summarizing the needed Activity data to get a sum of each category:
+```{r}
+
+Sum_mins<- summarize(dailyActivity, sum_very <- sum(VeryActiveMinutes), sum_fairly <- sum(FairlyActiveMinutes), sum_lightly <-sum(LightlyActiveMinutes), sum_sed <- sum(SedentaryMinutes))
+Sum_mins
+
+```
+\
+Assigning a data frame to store the sums and labels for each sum:
+```{r}
+Sum_min_labels <- c('VeryActiveMins', 'FairlyActiveMins', 'LightlyActiveMins', 'SedentaryMins')
+Sum_minutes<- c(19895, 12751, 181244, 931738)
+Mins_df <- data.frame(group = Sum_min_labels, value=  Sum_minutes)
+Mins_df
+```
+
+\
+Creating the pie chart using the ggplot2 library:
+```{r}
+
+ggplot(Mins_df, aes(x="", y=value, fill=group)) +
+  geom_bar(stat="identity", width=1) +
+  coord_polar("y", start=0)+
+  theme_void()+
+   labs(title= "Minutes Spent by the Users Split to Levels of Activity",
+      caption= 'Data Source: Fitabase Data 4.12.16-5.12.16')
+```
+\
+\
+
+This shows how the participants spent most of their time being sedentary and the active minutes are considerably small compared to the sedentary minutes.
+
+\
+\
+
+__3. Relationship between Very Active Minutes and Total Daily Calories Burned__
+\
+This code is used to create a scatterplot from the popular package "ggplot". Calories will be on the y axis and Very Active Minutes will be on the x axis.
+
+```{r}
+ggplot(data= dailyActivity)+
+  geom_point(mapping=aes(x=VeryActiveMinutes, y=Calories))+
+  geom_smooth(mapping = aes(x = VeryActiveMinutes, y = Calories))+
+  labs(title= "Very Active Minutes Vs. Total Calories Burned", caption= 'Data Source: Fitabase Data 4.12.16-5.12.16')
+```
+\
+
+This depicts a positive linear relationship between there 2 variables which means that the more minutes the participant was very active, the more calories they burnt.
+
+\
+\
+
+__4. The Relationship Between the time spent asleep in bed Vs time spend awake__
+
+Firstly, we run an SQL query to get the columns: Id, TotalMinutesAsleep and TotalMinutesAwake (which is the total minutes asleep taken away from total minutes in bed):
+
+```{r}
+sleepDay_v2 <- sqldf("SELECT Id, TotalMinutesAsleep, (TotalTimeInBed-TotalMinutesAsleep) AS TotalMinutesAwake FROM sleepDay")
+
+head(sleepDay_v2)
+```
+\
+
+Here, we take a the average for each of the 2 columns: 
+```{r}
+summarize(sleepDay_v2, mean_TotSleep = mean(TotalMinutesAsleep), mean_TotAwake = mean(TotalMinutesAwake))
+```
+\
+Now we assign those 2 values and their labels, separately to a data frame:
+```{r}
+sleepValues<- c(419.2, 39.3)
+sleepLables<- c("TotalMinsAsleep", "TotalMinsAwake")
+sleepPie <- data.frame(group= sleepLables, value= sleepValues)
+sleepPie
+```
+\
+Finally we can create the pie chart using ggplot2: 
+```{r}
+ggplot(sleepPie, aes(x="", y=value, fill=group)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0) +
+  theme_void()+
+  labs(title= "Minutes Spent by the Users In Bed",
+      caption= 'Data Source: Fitabase Data 4.12.16-5.12.16')
+```
+\
+\
+
+This plot shows how the users spend a portion of their time in bed awake, when they could have been getting a few more minutes of sleep.
+\
+\
+
+__5. Most Active days in the week__
+
+Here, we add the weekdays to the dailyActivity dataset:
+```{r}
+
+weekday <- weekdays(dailyActivity$ActivityDate)
+
+newdaily_Activity <- data.frame(dailyActivity, weekday)
+head(newdaily_Activity)
+```
+\
+Now we create the bar plot using ggplot: 
+```{r}
+
+ggplot(data=newdaily_Activity)+
+  geom_bar(mapping=aes(x=weekday, fill=weekday))+
+  labs(title= "Daily Activity Usage Logs Per Weekday", caption= 'Data Source: Fitabase Data 4.12.16-5.12.16')
+
+```
+\
+This barchart clearly shows that the most days that users used the Fitbit is Tuesday, Wednesday and Thursday. Also is least used on Monday.
+
+\
+\
+
+__6. Total Number of steps taken on days of the week__
+
+First and foremost we run an SQL query to get the sum of the total steps taken per weekday using out previous new_dailyActivity data set:
+```{r}
+
+weekday_Steps<- sqldf("SELECT SUM(TotalSteps) AS SumTotalSteps, weekday FROM newdaily_Activity GROUP BY weekday")
+weekday_Steps
+
+```
+Now we create a bar-plot using the barplot() function in R:
+```{r}
+library(RColorBrewer)
+coul <- brewer.pal(5, "Set2")
+barplot(height=weekday_Steps$SumTotalSteps, names=weekday_Steps$weekday, col=coul, xlab="Days of the Week", ylab="Sum of Total Number of Steps", main="Analyzing the paterns of total steps taken in a week")
+```
+
+\
+This shows how Tuesday and Wednesday appears to be the days with higlhest amount of steps whereas Sunday and Monday seem to be the days with the least steps taken.
+\
+\
+
+__7. Realtionship between Average heartrates per day of the week__
+
+Here, we take the days of the week of the heartrate dataset and form a dataframe:
+```{r}
+daysoftheweek <- weekdays(heartrate_new$Date)
+
+heartrate_v2 <- data.frame(heartrate_new, daysoftheweek)
+head(heartrate_v2)
+
+```
+\
+Now we run an SQL query to find out the average heart rate for each day of the week:
+```{r}
+heartrate_query<- sqldf("SELECT AVG(Value) AS Average_Heartrate, daysoftheweek FROM heartrate_v2 GROUP BY daysoftheweek")
+heartrate_query
+```
+\
+And finally, we create a bar-plot suing the barplot() function in R: 
+```{r}
+library(RColorBrewer)
+coul <- brewer.pal(5, "Set2")
+barplot(height=heartrate_query$Average_Heartrate, names=heartrate_query$daysoftheweek, col=coul, xlab="Days of the Week", ylab="Average Heartrate", main="Analyzing the average heartrate per day of the week")
+```
+
+\
+This shows how the average heart rate is almost the same for each day of the week but highest on Thursday and lowest on Friday.
+\
+\
+
+### **Act Phase**
+
+\
+
+#### Key Findings
+
+\
+
+* The average total number of steps taken by an individual in a day is 7638, lower than the daily 10,000 steps recommended by CDC. Users spend 70% of the time being seated or inactive per day.
+* There is a linear positive relationship with the Steps taken by users and the calories burnt.
+* There is a positive linear relationship with the Very active minutes and the total calories burnt.
+* There are users present who are sleeping less then 7 hours (not recommended).
+* Users have a steady heart rate but the maximum heart rate detected is hitting dangerous levels.
+* Sundays are the least active days for most users.
+* There are a few users who take a lot of time to fall asleep.
+
+\
+
+#### Recommendations for Bellabeat App
+\
+
+* Unlike the Fitbit, its better also capture the height, age and gender of the user along with the other variables being tracked. This way the app can automatically calculate the BMI of the users and also recommend additional features for women as per their menstrual cycle and their well being.
+* There can be notifications alerting the user when its time to sleep after reading information about the time they have to wake up the next day so that the could get the optimum amount of hours of sleep to be on the healthy side.
+* The app could also notify the user when they have been sitting (not moving much) for too long so that the user would be encouraged to be active and get some more steps in.
+* the app could introduce a way of setting a step goal of around 10,000 steps so that the user gets reports as to how much more they have to move and how much they have traveled, encouraging notification such as "Congratulations! You have reached your step goal for the day!" can be encouraging for users to reach their goal.
+* The users can be alerted when their heart rate is getting too high, the app could even provide suggestions as to how to bring the heart rate down to a normal level.
+* The regular users of the app who have achieved a certain number of step milestones should be eligible for discount on Bellabeat's other products such as the Leaf, Time, Spring and other new and upcoming products, that way the user is encouraged to complete their goals more often.
+* The women user base can be notified on menstrual heath, tracking their cycle and helpful resources for them to be comfortable throughout their cycle's journey and be supportive to their needs.
+* Make sure that the App takes automatic reading of the tracked variables instead of having the user to enter them manually, this way we can avoid human error and not trouble the users with entering details,
+* Sundays seem to be inactive days so we could try to boost the user's spirit by reminding them of their step goals and maybe facts about benefits upon reaching their step goals for a healthier lifestyle. 
+* When closing in on the user's bed time, they should be advised to do lighter activity and relaxing so that they would have an easier time falling asleep. They could be given suggestions to listen to soothing music or to read a book so they can wind-down with much ease.
+\
+\
+
+##### References
+\
+
+* https://r-graph-gallery.com/piechart-ggplot2.html
+* https://rpubs.com/jaykesudana/capstone-bellabeat
+* https://medium.com/@katherine.larkin/bellabeat-case-study-google-data-analytics-89ccdfe65aa8
+* https://www.kaggle.com/code/nahidahsan/google-data-analysis-capstone-project-bellabeat/notebook
+* https://www.kaggle.com/code/luisgmolina/case-study-2-luis-garc-a-molina
+* https://towardsdev.com/data-analysis-case-study-fitness-tracker-59c522fda4f
+* https://www.kaggle.com/code/irenashen1/capstone-bellabeat-case-study-r/notebook
+\
+\
+
+#### _A big thank you for reading my first ever case study results! I hope that you found this interesting. Please leave a comment and upvote if you found this useful!_
+
+\
+\
+\
